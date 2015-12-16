@@ -12,38 +12,45 @@
     <TextView
         android:id="@+id/label"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Type here:" />
+        android:layout_height="50dp"
+        android:text="Sgloe"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal" />
 
     <EditText
         android:id="@+id/entry"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/label"
-        android:background="@android:drawable/editbox_background" />
+        android:background="@android:drawable/editbox_background"
+        android:visibility="invisible" />
 
     <Button
         android:id="@+id/open"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_below="@id/entry"
-        android:layout_marginLeft="10dip"
-        android:text="Open" />
+        android:text="Speak"
+        android:layout_below="@+id/entry"
+        android:layout_alignLeft="@+id/send"
+        android:layout_alignStart="@+id/send" />
 
     <Button
         android:id="@+id/send"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@id/open"
-        android:layout_toLeftOf="@id/open"
-        android:text="Send" />
+        android:text="Send"
+        android:layout_below="@+id/open"
+        android:layout_alignLeft="@+id/close"
+        android:layout_alignStart="@+id/close"
+
+        android:visibility="invisible" />
 
     <Button
         android:id="@+id/close"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@id/send"
-        android:layout_toLeftOf="@id/send"
-        android:text="Close" />
+        android:text="Close"
+        android:layout_below="@+id/send"
+        android:layout_centerHorizontal="true"
+        android:visibility="invisible" />
 </RelativeLayout>

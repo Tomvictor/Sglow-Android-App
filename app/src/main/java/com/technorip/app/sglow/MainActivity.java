@@ -6,13 +6,18 @@ import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.speech.tts.TextToSpeech;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.EditText;
 import android.widget.Button;
+import android.widget.Toast;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 
@@ -29,7 +34,9 @@ public class MainActivity extends Activity
     byte[] readBuffer;
     int readBufferPosition;
     int counter;
+
     volatile boolean stopWorker;
+    private TextToSpeech t1;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -43,6 +50,16 @@ public class MainActivity extends Activity
         myLabel = (TextView)findViewById(R.id.label);
         myTextbox = (EditText)findViewById(R.id.entry);
 
+        t1=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if(status != TextToSpeech.ERROR) {
+                    t1.setLanguage(Locale.UK);
+                }
+            }
+        });
+        
+        
         //Open Button
         openButton.setOnClickListener(new View.OnClickListener()
         {
@@ -71,15 +88,12 @@ public class MainActivity extends Activity
         });
 
         //Close button
-        closeButton.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                try
-                {
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                try {
                     closeBT();
+                } catch (IOException ex) {
                 }
-                catch (IOException ex) { }
             }
         });
     }
@@ -106,6 +120,8 @@ public class MainActivity extends Activity
                 if(device.getName().equals("HC-05"))
                 {
                     mmDevice = device;
+                    myTextbox.setText(device.toString() + "");
+                    mBluetoothAdapter.cancelDiscovery();
                     break;
                 }
             }
@@ -117,7 +133,10 @@ public class MainActivity extends Activity
     {
         UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"); //Standard SerialPortService ID
         mmSocket = mmDevice.createRfcommSocketToServiceRecord(uuid);
-        mmSocket.connect();
+//        blhSocket = new FallbackBluetoothSocket(bluetoothSocket.getUnderlyingSocket());
+        try{mmSocket.connect();}catch(Exception e){e.printStackTrace();
+            Log.d("ERROR_ARUN", e.getMessage());
+        }
         mmOutputStream = mmSocket.getOutputStream();
         mmInputStream = mmSocket.getInputStream();
 
@@ -162,6 +181,12 @@ public class MainActivity extends Activity
                                         public void run()
                                         {
                                             myLabel.setText(data);
+                                            t1.speak(""+data, TextToSpeech.QUEUE_FLUSH, null);
+                                            Toast.makeText(getApplicationContext(),""+data.toString(),Toast.LENGTH_SHORT).show();
+////                                            while(t1.isSpeaking()){}
+////                                            stopWorker=true;
+//                                            for(int i=10000;i>0;i--){for(int j=10000;j>0;j--){}}
+//                                            t1.stop();
                                         }
                                     });
                                 }
